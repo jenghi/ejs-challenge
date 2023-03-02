@@ -1,5 +1,5 @@
 //jshint esversion:6
-
+const _ = require('lodash');
 const express = require("express");
 const bodyParser = require("body-parser");
 //const ejs = require("ejs");
@@ -18,7 +18,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static("public"));
 
 app.get("/", function(req, res){
-    console.log(posts);
+    
     res.render("home", {
       homeText: homeStartingContent,
       homePosts: posts
@@ -30,7 +30,7 @@ app.get("/about", function(req, res){
     homeText: aboutContent
   });
 });
-
+ 
 app.get("/contact", function(req, res){
   res.render("contact", {
     homeText: contactContent
@@ -39,6 +39,20 @@ app.get("/contact", function(req, res){
 
 app.get("/compose", function(req, res){
    res.render("compose");
+});
+
+app.get("/posts/:topic", function(req, res){
+   var requestTitle = _.lowerCase(req.params.topic);
+
+   posts.forEach(function(post){
+     if (_.lowerCase(post.title) === requestTitle){
+        console.log("founded!!!");
+        res.render("post", {homePosts: post });
+     }else{
+      console.log("NOT MATCH");
+     }
+   });
+   
 });
 
 app.post("/compose", function(req, res){
